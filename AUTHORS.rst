@@ -92,3 +92,31 @@ Patches and Suggestions
 - Jonathan Drosdeck
 - Jiri Machalek
 - Steve Pulec
+- Michael Kelly
+- Michael Newman <newmaniese@gmail.com>
+- Jonty Wareing <jonty@jonty.co.uk>
+- Shivaram Lingamneni
+- Miguel Turner
+- Rohan Jain (crodjer)
+- Justin Barber <barber.justin@gmail.com>
+- Roman Haritonov <@reclosedev>
+- Josh Imhoff <joshimhoff13@gmail.com>
+- Arup Malakar <amalakar@gmail.com>
+- Danilo Bargen (dbrgn)
+- Torsten Landschoff
+- Michael Holler (apotheos)
+- Timnit Gebru
+- Sarah Gonzalez
+- Victoria Mo
+- Leila Muhtasib
+- Matthias Rahlf <matthias@webding.de>
+- Jakub Roztocil <jakub@roztocil.name>
+- Ian Cordasco <graffatcolmingov@gmail.com> @sigmavirus24
+- Rhys Elsmore
+- André Graf (dergraf)
+- Stephen Zhuang (everbird)
+- Martijn Pieters
+- Jonatan Heyman
+- David Bonner <dbonner@gmail.com> @rascalking
+- Vinod Chandru
+- Johnny Goodnow <j.goodnow29@gmail.com>

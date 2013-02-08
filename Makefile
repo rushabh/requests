@@ -1,41 +1,30 @@
 SHELL := /bin/bash
 
-init:
-	python setup.py develop
+test:
+	py.test
+
+test-deps:
 	pip install -r requirements.txt
 
-test:
-	nosetests ./tests/*
+six:
+	python test_requests.py
+	python3 test_requests.py
 
-lazy:
-	nosetests --with-color tests/test_requests.py
+deps: urllib3 certs charade
 
-simple:
-	nosetests tests/test_requests.py
-
-server:
-	gunicorn httpbin:app --bind=0.0.0.0:7077 &
-
-ci: init
-	nosetests tests/test_requests.py --with-xunit --xunit-file=junit-report.xml
-
-simpleci:
-	nosetests tests/test_requests.py --with-xunit --xunit-file=junit-report.xml
-
-stats:
-	pyflakes requests | awk -F\: '{printf "%s:%s: [E]%s\n", $1, $2, $3}' > violations.pyflakes.txt
-
-site:
-	cd docs; make dirhtml
-
-pyc:
-	find . -name "*.pyc" -exec rm '{}' ';'
-
-deps:
+urllib3:
 	rm -fr requests/packages/urllib3
 	git clone https://github.com/shazow/urllib3.git
-	cd urllib3 && git checkout release && cd ..
+	cd urllib3 && git checkout master && cd ..
 	mv urllib3/urllib3 requests/packages/
 	rm -fr urllib3
 
-docs: site
+charade:
+	rm -fr requests/packages/charade
+	git clone https://github.com/sigmavirus24/charade.git
+	cd charade && git checkout master && cd ..
+	mv charade/charade requests/packages/
+	rm -fr charade
+
+certs:
+	cd requests && curl -O https://raw.github.com/kennethreitz/certifi/master/certifi/cacert.pem

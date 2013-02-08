@@ -10,7 +10,7 @@ import zlib
 
 from io import BytesIO
 
-from .exceptions import HTTPError
+from .exceptions import DecodeError
 from .packages.six import string_types as basestring
 
 
@@ -130,7 +130,9 @@ class HTTPResponse(object):
             after having ``.read()`` the file object. (Overridden if ``amt`` is
             set.)
         """
-        content_encoding = self.headers.get('content-encoding')
+        # Note: content-encoding value should be case-insensitive, per RFC 2616
+        # Section 3.5
+        content_encoding = self.headers.get('content-encoding', '').lower()
         decoder = self.CONTENT_DECODERS.get(content_encoding)
         if decode_content is None:
             decode_content = self._decode_content
@@ -143,14 +145,24 @@ class HTTPResponse(object):
                 # cStringIO doesn't like amt=None
                 data = self._fp.read()
             else:
-                return self._fp.read(amt)
+                data = self._fp.read(amt)
+                if amt != 0 and not data:  # Platform-specific: Buggy versions of Python.
+                    # Close the connection when no data is returned
+                    #
+                    # This is redundant to what httplib/http.client _should_
+                    # already do.  However, versions of python released before
+                    # December 15, 2012 (http://bugs.python.org/issue16298) do not
+                    # properly close the connection in all cases. There is no harm
+                    # in redundantly calling close.
+                    self._fp.close()
+                return data
 
             try:
                 if decode_content and decoder:
                     data = decoder(data)
-            except IOError:
-                raise HTTPError("Received response with content-encoding: %s, but "
-                                "failed to decode it." % content_encoding)
+            except (IOError, zlib.error):
+                raise DecodeError("Received response with content-encoding: %s, but "
+                                  "failed to decode it." % content_encoding)
 
             if cache_content:
                 self._body = data
@@ -171,11 +183,22 @@ class HTTPResponse(object):
         with ``original_response=r``.
         """
 
+        # Normalize headers between different versions of Python
+        headers = {}
+        for k, v in r.getheaders():
+            # Python 3: Header keys are returned capitalised
+            k = k.lower()
+
+            has_value = headers.get(k)
+            if has_value: # Python 3: Repeating header keys are unmerged.
+                v = ', '.join([has_value, v])
+
+            headers[k] = v
+
         # HTTPResponse objects in Python 3 don't have a .strict attribute
         strict = getattr(r, 'strict', 0)
         return ResponseCls(body=r,
-                           # In Python 3, the header keys are returned capitalised
-                           headers=dict((k.lower(), v) for k,v in r.getheaders()),
+                           headers=headers,
                            status=r.status,
                            version=r.version,
                            reason=r.reason,

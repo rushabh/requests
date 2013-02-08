@@ -25,10 +25,10 @@ But, you really `shouldn't do that <http://www.pip-installer.org/en/latest/other
 Cheeseshop Mirror
 -----------------
 
-If the Cheeseshop is down, you can also install Requests from Kenneth Reitz's
-personal `Cheeseshop mirror <http://pip.kennethreitz.com/>`_::
+If the Cheeseshop is down, you can also install Requests from one of the
+mirrors. `Crate.io <http://crate.io>`_ is one of them::
 
-    $ pip install -i http://pip.kennethreitz.com/simple requests
+    $ pip install -i http://simple.crate.io/ requests
 
 
 Get the Code
@@ -43,36 +43,14 @@ You can either clone the public repository::
 
 Download the `tarball <https://github.com/kennethreitz/requests/tarball/master>`_::
 
-    $ curl -O https://github.com/kennethreitz/requests/tarball/master
+    $ curl -OL https://github.com/kennethreitz/requests/tarball/master
 
 Or, download the `zipball <https://github.com/kennethreitz/requests/zipball/master>`_::
 
-    $ curl -O https://github.com/kennethreitz/requests/zipball/master
+    $ curl -OL https://github.com/kennethreitz/requests/zipball/master
 
 
 Once you have a copy of the source, you can embed it in your Python package,
 or install it into your site-packages easily::
 
     $ python setup.py install
-
-.. _gevent:
-
-Installing Gevent
------------------
-
-If you are using the ``requests.async`` module for making concurrent
-requests, you need to install gevent.
-
-To install gevent, you'll need ``libevent``.
-
-OSX::
-
-    $ brew install libevent
-
-Ubuntu::
-
-    $ apt-get install libevent-dev
-
-Once you have ``libevent``, you can install ``gevent`` with ``pip``::
-
-    $ pip install gevent
